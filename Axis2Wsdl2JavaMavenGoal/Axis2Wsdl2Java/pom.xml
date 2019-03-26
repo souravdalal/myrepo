@@ -1,0 +1,140 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.blogspot.souravdalal</groupId>
+	<artifactId>Axis2Wsdl2Java</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<build>
+		<plugins>
+			<!-- Generates JAVA source files from the WSDL -->
+			<plugin>
+				<groupId>org.apache.axis2</groupId>
+				<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
+				<version>1.7.9</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>wsdl2code</goal>
+						</goals>
+						<configuration>
+						<!--Check all configuration in the link https://axis.apache.org/axis2/java/core/tools/maven-plugins/axis2-wsdl2code-maven-plugin/wsdl2code-mojo.html -->
+							<packageName>com.blogspot.souravdalal.calculator.service</packageName> <!-- package for non namespace confgiured cases -->
+							<wsdlFile>src/main/resources/Calculator.wsdl</wsdlFile>
+							<databindingName>adb</databindingName>
+							<generateServerSide>true</generateServerSide>
+							<generateServerSideInterface>false</generateServerSideInterface>
+							<namespaceURIs>
+								<namespaceURI>
+									<uri>http://c.b.a</uri>
+									<packageName>com.blogspot.souravdalal.calculator.model</packageName>
+								</namespaceURI>
+							</namespaceURIs>
+							<allPorts>true</allPorts>
+
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<descriptorRefs>
+						<descriptorRef>src</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<!-- this is used for inheritance merges -->
+						<phase>package</phase>
+						<!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.apache.openejb</groupId>
+									<artifactId>openejb-javaagent</artifactId>
+									<version>3.0-beta-2</version>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>target/generated-sources/axis2/wsdl2code/resources</directory>
+			</resource>
+			<resource>
+				<directory>target/generated-sources/adb/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+	</build>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2</artifactId>
+			<version>1.7.9</version>
+			<type>pom</type>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.axis2/axis2-adb -->
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-adb</artifactId>
+			<version>1.7.9</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.axis2/axis2-adb-codegen -->
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-adb-codegen</artifactId>
+			<version>1.7.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
+			<version>1.7.9</version>
+		</dependency>
+
+
+	</dependencies>
+
+
+</project>
